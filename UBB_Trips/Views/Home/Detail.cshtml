@@ -1,0 +1,27 @@
+﻿@using UBB_Trips.ViewModel;
+@model TripDetailViewModel
+
+<div class="container">
+    <div class="row">
+        <div class="text-center">
+            <p><strong><em>@Model.Title</em></strong>
+        </div><p /><p />
+        <div class="col-md-6" width="50%">
+            <div class="text-center">
+                <img src="@Model.ImageURL" alt="@Model.Alt" height="300" />
+            </div>
+        </div>
+
+        <div class="col-md-6" width="50%">
+            <div style="text-align: left;">
+                <p>@Model.Description<p />
+                <p>Trip starts on: @Model.TripSTART.ToString("dd.MM.yyy")</p>
+                <p>Trip starts on: @Model.TripEND.ToString("dd.MM.yyy")</p>
+                <p>Total number of days: <strong>@Model.days</strong></p>
+                <p>Trip type: @Model.Type</p>
+                <p>Trip country: @Model.Country</p>
+                <p>Food accomodation: @Model.Food</p>
+            </div>
+        </div>
+    </div>
+</div>
