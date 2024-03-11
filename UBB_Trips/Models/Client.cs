@@ -1,0 +1,13 @@
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace UBB_Trips.Models;
+
+public class Client
+{
+    [Key]
+    public int ID { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Email { get; set; }
+    public Booking Booking { get; set; }
+}

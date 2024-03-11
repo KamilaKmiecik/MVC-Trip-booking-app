@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices.Marshalling;
+﻿/*using System.Runtime.InteropServices.Marshalling;
 
 namespace UBB_Trips.ViewModel
 {
@@ -40,4 +40,4 @@ namespace UBB_Trips.ViewModel
         public string Alt { get; set; }
 
     }
-}
+}*/

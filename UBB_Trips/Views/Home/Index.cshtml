@@ -1,5 +1,5 @@
-﻿@using UBB_Trips.ViewModel;
-@model IEnumerable<TripDetailViewModel>
+﻿@using UBB_Trips.Models;
+@model IEnumerable<Trip>
 
 <div class="container">
     <div class="row">
@@ -14,7 +14,7 @@
             </div>
         </div>
         <div class="col-md-6" width="50%">
-            @foreach (TripDetailViewModel trip in @Model)
+            @foreach (Trip trip in @Model)
             {
                 <li style="text-align: left;">
                     <a asp-action="Detail" asp-controller="Home" asp-route-id="@trip.ID"> @trip.Title</a>
