@@ -42,6 +42,11 @@ public class Trip
 
     public string Alt { get; set; }
 
+    public Trip()
+    {
+            
+    }
+
 }
 
 

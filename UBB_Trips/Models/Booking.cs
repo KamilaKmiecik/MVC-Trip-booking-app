@@ -10,5 +10,10 @@ namespace UBB_Trips.Models
         public Trip Trip { get; set; }
         public int NumberOfBookings { get; set; }
         public IEnumerable<Client> Clients { get; set; }
+
+        public Booking()
+        {
+            
+        }
     }
 }
