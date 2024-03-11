@@ -5,12 +5,38 @@ namespace UBB_Trips.Models;
 
 public enum TripTypeModel
 {
-    Family, Honeymoon, Luxury, SelfDrive, Holidays, Vacation
+    [Display(Name = "Family")]
+    Family,
+
+    [Display(Name = "Honeymoon")]
+    Honeymoon,
+
+    [Display(Name = "Luxury")]
+    Luxury,
+
+    [Display(Name = "Self Drive")]
+    SelfDrive,
+
+    [Display(Name = "Holidays")]
+    Holidays,
+
+    [Display(Name = "Vacation")]
+    Vacation
 }
 
 public enum FoodAcoomodationModel
 {
-    None, RoomOnly, HalfBoard, FullBoard
+    [Display(Name = "None")]
+    None,
+
+    [Display(Name = "Room Only")]
+    RoomOnly,
+
+    [Display(Name = "Half Board")]
+    HalfBoard,
+
+    [Display(Name = "Full Board")]
+    FullBoard
 }
 
 public enum CountryModel
@@ -38,6 +64,7 @@ public class Trip
 
     public CountryModel Country { get; set; }
 
+    [Display(Name = "Image")]
     public string ImageURL { get; set; }
 
     public string Alt { get; set; }

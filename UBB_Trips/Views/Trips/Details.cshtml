@@ -9,6 +9,10 @@
 <div>
     <h4>Trip</h4>
     <hr />
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
+        <a asp-action="Index">Back to List</a>
+    </div>
     <dl class="row">
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.TripSTART)
@@ -52,21 +56,12 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Country)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ImageURL)
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImageURL)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Alt)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Alt)
+        <dd class="col-sm-10">
+            <img src="@Model.ImageURL" alt="@Model.Alt" class="img-fluid" />
         </dd>
     </dl>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.ID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+

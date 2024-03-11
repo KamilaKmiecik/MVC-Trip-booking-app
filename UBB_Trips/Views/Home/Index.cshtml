@@ -1,5 +1,4 @@
 ﻿@using UBB_Trips.Models;
-@model IEnumerable<Trip>
 
 <div class="container">
     <div class="row">
@@ -8,18 +7,10 @@
             <p style="text-align: center;">
             </p>
         </div>
-        <div class="col-md-6" width="50%">
+        <div class="col-md-6" width="100%">
             <div class="text-center">
                 <img src="https://media.cntraveller.com/photos/61b1f4863c1570da15248580/master/pass/tour%20ops.jpg" alt="WycieczkiVisualizer" width="90%" />
             </div>
-        </div>
-        <div class="col-md-6" width="50%">
-            @foreach (Trip trip in @Model)
-            {
-                <li style="text-align: left;">
-                    <a asp-action="Detail" asp-controller="Home" asp-route-id="@trip.ID"> @trip.Title</a>
-                </li>
-            }
         </div>
     </div>
 </div>

@@ -14,7 +14,7 @@
             <div class="container-fluid">
                 <a></a><img src="https://as1.ftcdn.net/v2/jpg/02/46/24/74/1000_F_246247429_tmb1mVUrB9eyFKckjmZT5XJ5L9DyHgt1.jpg" alt="Logo" width="35" height="35" /></a></>
                 <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index"><strong>UBB Trips</strong></a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -25,6 +25,33 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link text-dark dropdown-toggle" href="#" id="tripsDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+                                Trips
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="tripsDropdown">
+                                <a class="dropdown-item" asp-area="" asp-controller="Trips" asp-action="Index">Trip list</a>
+                                <a class="dropdown-item" asp-area="" asp-controller="Trips" asp-action="Create">Create</a>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link text-dark dropdown-toggle" href="#" id="bookingDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Booking
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="bookingDropdown">
+                                <a class="dropdown-item" asp-area="" asp-controller="Bookings" asp-action="Create">Book</a>
+                                <a class="dropdown-item" asp-area="" asp-controller="Bookings" asp-action="Index">Booked list</a>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link text-dark dropdown-toggle" href="#" id="clientsDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+                                Client
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="clientsDropdown">
+                                <a class="dropdown-item" asp-area="" asp-controller="Clients" asp-action="Index">Client list</a>
+                                <a class="dropdown-item" asp-area="" asp-controller="Clients" asp-action="Create">Create account</a>
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -46,6 +73,7 @@
             <a asp-area="" asp-controller="Home" asp-action="Privacy"></a>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
