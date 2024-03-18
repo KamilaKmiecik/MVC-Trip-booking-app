@@ -1,2 +1,2 @@
 # UBB_Trips
-MVC app for displaying trip descriptions. Data driven from a database is so far simulated by a list of elements 
+MVC app. Using EF and a Code First approach. Implemented the Repository Pattern
