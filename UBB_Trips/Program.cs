@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System.Data.Entity;
 using Microsoft.Extensions.Hosting;
+using UBB_Trips.Repository;
 
 namespace UBB_Trips;
 
@@ -21,16 +22,16 @@ public class Program
 
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
         builder.Services.AddControllersWithViews();
+        builder.Services.AddScoped<ITripRepository, TripRepository>();
+        builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+        builder.Services.AddScoped<IClientRepository, ClientRepository>();
 
         var app = builder.Build();
-       
 
 
-        // Configure the HTTP request pipeline.
         if (!app.Environment.IsDevelopment())
         {
             app.UseExceptionHandler("/Home/Error");
-            // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
         }
 
@@ -47,6 +48,8 @@ public class Program
                 var logger = services.GetRequiredService<ILogger<Program>>();
                 logger.LogError(ex, "ERROR");
             }
+
+            
         }
 
         app.UseHttpsRedirection();

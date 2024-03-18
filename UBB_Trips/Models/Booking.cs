@@ -12,7 +12,7 @@ namespace UBB_Trips.Models
         [Display(Name = "Number of people")]
         public int NumberOfBookings { get; set; }
 
-        public IEnumerable<Client> Clients { get; set; }
+        public IEnumerable<Client>? Clients { get; set; }
 
         public Booking()
         {

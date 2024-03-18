@@ -1,42 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using UBB_Trips.Data;
 using UBB_Trips.Models;
+using UBB_Trips.Repository;
 
 namespace UBB_Trips.Controllers
 {
     public class BookingsController : Controller
     {
-        private readonly TripContext _context;
+        private readonly IBookingRepository _bookingRepository;
 
-        public BookingsController(TripContext context)
+        public BookingsController(IBookingRepository bookingRepository)
         {
-            _context = context;
+            _bookingRepository = bookingRepository ?? throw new ArgumentNullException(nameof(bookingRepository));
         }
 
         // GET: Bookings
         public async Task<IActionResult> Index()
         {
-              return _context.Bookings != null ? 
-                          View(await _context.Bookings.ToListAsync()) :
-                          Problem("Entity set 'TripContext.Bookings'  is null.");
+            var bookings = await _bookingRepository.GetAllAsync();
+            return View(bookings);
         }
 
         // GET: Bookings/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Bookings == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var booking = await _context.Bookings
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var booking = await _bookingRepository.GetByIdAsync(id.Value);
             if (booking == null)
             {
                 return NotFound();
@@ -52,16 +46,13 @@ namespace UBB_Trips.Controllers
         }
 
         // POST: Bookings/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,Name,NumberOfBookings")] Booking booking)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(booking);
-                await _context.SaveChangesAsync();
+                await _bookingRepository.AddAsync(booking);
                 return RedirectToAction(nameof(Index));
             }
             return View(booking);
@@ -70,22 +61,21 @@ namespace UBB_Trips.Controllers
         // GET: Bookings/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Bookings == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var booking = await _context.Bookings.FindAsync(id);
+            var booking = await _bookingRepository.GetByIdAsync(id.Value);
             if (booking == null)
             {
                 return NotFound();
             }
+
             return View(booking);
         }
 
         // POST: Bookings/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,Name,NumberOfBookings")] Booking booking)
@@ -97,22 +87,7 @@ namespace UBB_Trips.Controllers
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(booking);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!BookingExists(booking.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                await _bookingRepository.UpdateAsync(booking);
                 return RedirectToAction(nameof(Index));
             }
             return View(booking);
@@ -121,13 +96,12 @@ namespace UBB_Trips.Controllers
         // GET: Bookings/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Bookings == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var booking = await _context.Bookings
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var booking = await _bookingRepository.GetByIdAsync(id.Value);
             if (booking == null)
             {
                 return NotFound();
@@ -141,23 +115,8 @@ namespace UBB_Trips.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Bookings == null)
-            {
-                return Problem("Entity set 'TripContext.Bookings'  is null.");
-            }
-            var booking = await _context.Bookings.FindAsync(id);
-            if (booking != null)
-            {
-                _context.Bookings.Remove(booking);
-            }
-            
-            await _context.SaveChangesAsync();
+            await _bookingRepository.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool BookingExists(int id)
-        {
-          return (_context.Bookings?.Any(e => e.ID == id)).GetValueOrDefault();
         }
     }
 }

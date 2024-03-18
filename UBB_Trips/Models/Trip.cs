@@ -2,7 +2,6 @@
 
 namespace UBB_Trips.Models;
 
-
 public enum TripTypeModel
 {
     [Display(Name = "Family")]
@@ -65,9 +64,9 @@ public class Trip
     public CountryModel Country { get; set; }
 
     [Display(Name = "Image")]
-    public string ImageURL { get; set; }
+    public string? ImageURL { get; set; }
 
-    public string Alt { get; set; }
+    public string? Alt { get; set; }
 
     public Trip()
     {

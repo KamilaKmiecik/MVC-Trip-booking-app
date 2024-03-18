@@ -1,42 +1,38 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using UBB_Trips.Data;
 using UBB_Trips.Models;
+using UBB_Trips.Repository;
 
 namespace UBB_Trips.Controllers
 {
     public class ClientsController : Controller
     {
-        private readonly TripContext _context;
+        private readonly IClientRepository _clientRepository;
 
-        public ClientsController(TripContext context)
+        public ClientsController(IClientRepository clientRepository)
         {
-            _context = context;
+            _clientRepository = clientRepository ?? throw new ArgumentNullException(nameof(clientRepository));
         }
 
         // GET: Clients
         public async Task<IActionResult> Index()
         {
-              return _context.Clients != null ? 
-                          View(await _context.Clients.ToListAsync()) :
-                          Problem("Entity set 'TripContext.Clients'  is null.");
+            var clients = await _clientRepository.GetAllAsync();
+            return View(clients);
         }
 
         // GET: Clients/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Clients == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var client = await _context.Clients
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var client = await _clientRepository.GetByIdAsync(id.Value);
             if (client == null)
             {
                 return NotFound();
@@ -52,16 +48,13 @@ namespace UBB_Trips.Controllers
         }
 
         // POST: Clients/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,FirstName,LastName,Email")] Client client)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(client);
-                await _context.SaveChangesAsync();
+                await _clientRepository.AddAsync(client);
                 return RedirectToAction(nameof(Index));
             }
             return View(client);
@@ -70,22 +63,21 @@ namespace UBB_Trips.Controllers
         // GET: Clients/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Clients == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var client = await _context.Clients.FindAsync(id);
+            var client = await _clientRepository.GetByIdAsync(id.Value);
             if (client == null)
             {
                 return NotFound();
             }
+
             return View(client);
         }
 
         // POST: Clients/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,FirstName,LastName,Email")] Client client)
@@ -99,19 +91,11 @@ namespace UBB_Trips.Controllers
             {
                 try
                 {
-                    _context.Update(client);
-                    await _context.SaveChangesAsync();
+                    await _clientRepository.UpdateAsync(client);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ClientExists(client.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -121,13 +105,12 @@ namespace UBB_Trips.Controllers
         // GET: Clients/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Clients == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var client = await _context.Clients
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var client = await _clientRepository.GetByIdAsync(id.Value);
             if (client == null)
             {
                 return NotFound();
@@ -141,23 +124,8 @@ namespace UBB_Trips.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Clients == null)
-            {
-                return Problem("Entity set 'TripContext.Clients'  is null.");
-            }
-            var client = await _context.Clients.FindAsync(id);
-            if (client != null)
-            {
-                _context.Clients.Remove(client);
-            }
-            
-            await _context.SaveChangesAsync();
+            await _clientRepository.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool ClientExists(int id)
-        {
-          return (_context.Clients?.Any(e => e.ID == id)).GetValueOrDefault();
         }
     }
 }

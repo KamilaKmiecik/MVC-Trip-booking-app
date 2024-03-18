@@ -1,42 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using UBB_Trips.Data;
+using System;
+using System.Threading.Tasks;
 using UBB_Trips.Models;
+using UBB_Trips.Repository;
 
 namespace UBB_Trips.Controllers
 {
     public class TripsController : Controller
     {
-        private readonly TripContext _context;
+        private readonly ITripRepository _tripRepository;
 
-        public TripsController(TripContext context)
+        public TripsController(ITripRepository tripRepository)
         {
-            _context = context;
+            _tripRepository = tripRepository ?? throw new ArgumentNullException(nameof(tripRepository));
         }
 
         // GET: Trips
         public async Task<IActionResult> Index()
         {
-              return _context.Trips != null ? 
-                          View(await _context.Trips.ToListAsync()) :
-                          Problem("Entity set 'TripContext.Trips'  is null.");
+            var trips = await _tripRepository.GetAllAsync();
+            return View(trips);
         }
 
         // GET: Trips/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Trips == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var trip = await _context.Trips
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var trip = await _tripRepository.GetByIdAsync(id.Value);
             if (trip == null)
             {
                 return NotFound();
@@ -52,16 +47,13 @@ namespace UBB_Trips.Controllers
         }
 
         // POST: Trips/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,TripSTART,TripEND,Title,Description,Type,Food,Country,ImageURL,Alt")] Trip trip)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(trip);
-                await _context.SaveChangesAsync();
+                await _tripRepository.AddAsync(trip);
                 return RedirectToAction(nameof(Index));
             }
             return View(trip);
@@ -70,12 +62,12 @@ namespace UBB_Trips.Controllers
         // GET: Trips/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Trips == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var trip = await _context.Trips.FindAsync(id);
+            var trip = await _tripRepository.GetByIdAsync(id.Value);
             if (trip == null)
             {
                 return NotFound();
@@ -84,8 +76,6 @@ namespace UBB_Trips.Controllers
         }
 
         // POST: Trips/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,TripSTART,TripEND,Title,Description,Type,Food,Country,ImageURL,Alt")] Trip trip)
@@ -99,19 +89,11 @@ namespace UBB_Trips.Controllers
             {
                 try
                 {
-                    _context.Update(trip);
-                    await _context.SaveChangesAsync();
+                    await _tripRepository.UpdateAsync(trip);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!TripExists(trip.ID))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                   
                 }
                 return RedirectToAction(nameof(Index));
             }
@@ -121,13 +103,12 @@ namespace UBB_Trips.Controllers
         // GET: Trips/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Trips == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            var trip = await _context.Trips
-                .FirstOrDefaultAsync(m => m.ID == id);
+            var trip = await _tripRepository.GetByIdAsync(id.Value);
             if (trip == null)
             {
                 return NotFound();
@@ -141,23 +122,8 @@ namespace UBB_Trips.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Trips == null)
-            {
-                return Problem("Entity set 'TripContext.Trips'  is null.");
-            }
-            var trip = await _context.Trips.FindAsync(id);
-            if (trip != null)
-            {
-                _context.Trips.Remove(trip);
-            }
-            
-            await _context.SaveChangesAsync();
+            await _tripRepository.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool TripExists(int id)
-        {
-          return (_context.Trips?.Any(e => e.ID == id)).GetValueOrDefault();
         }
     }
 }
