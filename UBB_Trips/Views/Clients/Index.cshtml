@@ -1,4 +1,4 @@
-﻿@model IEnumerable<UBB_Trips.Models.Client>
+﻿@model List<UBB_Trips.Models.Client>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,35 +13,65 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.FirstName)
+                @Html.DisplayNameFor(model => model.First().FirstName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LastName)
+                @Html.DisplayNameFor(model => model.First().LastName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Email)
+                @Html.DisplayNameFor(model => model.First().Email)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.FirstName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.LastName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+<div>
+    Page @(ViewBag.CurrentPage) of @((int)Math.Ceiling((double)ViewBag.TotalClients / ViewBag.PageSize))
+</div>
+
+<div>
+    @if (ViewBag.CurrentPage > 1)
+    {
+        <a asp-action="Index" asp-controller="Clients" asp-route-page="@(ViewBag.CurrentPage - 1)" asp-route-pageSize="@ViewBag.PageSize">Previous Page</a>
+    }
+
+    @if (ViewBag.CurrentPage < (int)Math.Ceiling((double)ViewBag.TotalClients / ViewBag.PageSize))
+    {
+        <a asp-action="Index" asp-controller="Clients" asp-route-page="@(ViewBag.CurrentPage + 1)" asp-route-pageSize="@ViewBag.PageSize">Next Page</a>
+    }
+</div>
+
+<div>
+    <form asp-action="Index" asp-controller="Clients" method="get">
+        <label for="pageSize">Clients per page:</label>
+        <select id="pageSize" name="pageSize">
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+        </select>
+        <input type="submit" value="Apply" />
+    </form>
+</div>
+

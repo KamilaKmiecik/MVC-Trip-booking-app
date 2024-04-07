@@ -1,24 +1,30 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using UBB_Trips.Models;
-using UBB_Trips.Repository;
+using UBB_Trips.Services;
 
 namespace UBB_Trips.Controllers
 {
     public class BookingsController : Controller
     {
-        private readonly IBookingRepository _bookingRepository;
+        private readonly IBookingService _bookingService;
 
-        public BookingsController(IBookingRepository bookingRepository)
+        public BookingsController(IBookingService bookingService)
         {
-            _bookingRepository = bookingRepository ?? throw new ArgumentNullException(nameof(bookingRepository));
+            _bookingService = bookingService ?? throw new ArgumentNullException(nameof(bookingService));
         }
 
         // GET: Bookings
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
-            var bookings = await _bookingRepository.GetAllAsync();
+            var bookings = await _bookingService.GetBookingsPerPageAsync(page, pageSize);
+            var totalBookings = await _bookingService.GetTotalNumberOfBookingsAsync();
+
+            ViewBag.TotalBookings = totalBookings;
+            ViewBag.PageSize = pageSize;
+            ViewBag.CurrentPage = page;
             return View(bookings);
         }
 
@@ -30,7 +36,7 @@ namespace UBB_Trips.Controllers
                 return NotFound();
             }
 
-            var booking = await _bookingRepository.GetByIdAsync(id.Value);
+            var booking = await _bookingService.GetByIdAsync(id.Value);
             if (booking == null)
             {
                 return NotFound();
@@ -40,8 +46,11 @@ namespace UBB_Trips.Controllers
         }
 
         // GET: Bookings/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var clients = await _bookingService.GetAllAsync();
+            ViewBag.ClientIds = new SelectList(clients, "Id", "Name");
+           // ViewBag.Trips = await _bookingService.GetTripsAsync();
             return View();
         }
 
@@ -52,7 +61,7 @@ namespace UBB_Trips.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _bookingRepository.AddAsync(booking);
+                await _bookingService.AddAsync(booking);
                 return RedirectToAction(nameof(Index));
             }
             return View(booking);
@@ -66,7 +75,7 @@ namespace UBB_Trips.Controllers
                 return NotFound();
             }
 
-            var booking = await _bookingRepository.GetByIdAsync(id.Value);
+            var booking = await _bookingService.GetByIdAsync(id.Value);
             if (booking == null)
             {
                 return NotFound();
@@ -87,7 +96,7 @@ namespace UBB_Trips.Controllers
 
             if (ModelState.IsValid)
             {
-                await _bookingRepository.UpdateAsync(booking);
+                await _bookingService.UpdateAsync(booking);
                 return RedirectToAction(nameof(Index));
             }
             return View(booking);
@@ -101,7 +110,7 @@ namespace UBB_Trips.Controllers
                 return NotFound();
             }
 
-            var booking = await _bookingRepository.GetByIdAsync(id.Value);
+            var booking = await _bookingService.GetByIdAsync(id.Value);
             if (booking == null)
             {
                 return NotFound();
@@ -115,7 +124,7 @@ namespace UBB_Trips.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _bookingRepository.DeleteAsync(id);
+            await _bookingService.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
     }

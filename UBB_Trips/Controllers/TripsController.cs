@@ -1,26 +1,32 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
+using System.Data.Entity.Infrastructure;
+using System.Linq;
 using System.Threading.Tasks;
 using UBB_Trips.Models;
-using UBB_Trips.Repository;
+using UBB_Trips.Services;
 
 namespace UBB_Trips.Controllers
 {
     public class TripsController : Controller
     {
-        private readonly ITripRepository _tripRepository;
+        private readonly ITripService _tripService;
 
-        public TripsController(ITripRepository tripRepository)
+        public TripsController(ITripService tripService)
         {
-            _tripRepository = tripRepository ?? throw new ArgumentNullException(nameof(tripRepository));
+            _tripService = tripService ?? throw new ArgumentNullException(nameof(tripService));
         }
 
         // GET: Trips
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
-            var trips = await _tripRepository.GetAllAsync();
-            return View(trips);
+            var trips = await _tripService.GetTripsPerPageAsync(page, pageSize);
+            var totalTrips = await _tripService.GetTotalNumberOfTripsAsync();
+
+            ViewBag.TotalTrips = totalTrips;
+            ViewBag.PageSize = pageSize;
+            ViewBag.CurrentPage = page;
+            return View(trips.ToList());
         }
 
         // GET: Trips/Details/5
@@ -31,7 +37,7 @@ namespace UBB_Trips.Controllers
                 return NotFound();
             }
 
-            var trip = await _tripRepository.GetByIdAsync(id.Value);
+            var trip = await _tripService.GetTripByIdAsync(id.Value);
             if (trip == null)
             {
                 return NotFound();
@@ -53,7 +59,7 @@ namespace UBB_Trips.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _tripRepository.AddAsync(trip);
+                await _tripService.AddAsync(trip);
                 return RedirectToAction(nameof(Index));
             }
             return View(trip);
@@ -67,11 +73,12 @@ namespace UBB_Trips.Controllers
                 return NotFound();
             }
 
-            var trip = await _tripRepository.GetByIdAsync(id.Value);
+            var trip = await _tripService.GetTripByIdAsync(id.Value);
             if (trip == null)
             {
                 return NotFound();
             }
+
             return View(trip);
         }
 
@@ -89,13 +96,14 @@ namespace UBB_Trips.Controllers
             {
                 try
                 {
-                    await _tripRepository.UpdateAsync(trip);
+                    await _tripService.UpdateAsync(trip);
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException e)
                 {
-                   
+                    // Handle exception
+                    return View(trip);
                 }
-                return RedirectToAction(nameof(Index));
             }
             return View(trip);
         }
@@ -108,7 +116,7 @@ namespace UBB_Trips.Controllers
                 return NotFound();
             }
 
-            var trip = await _tripRepository.GetByIdAsync(id.Value);
+            var trip = await _tripService.GetTripByIdAsync(id.Value);
             if (trip == null)
             {
                 return NotFound();
@@ -122,7 +130,7 @@ namespace UBB_Trips.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _tripRepository.DeleteAsync(id);
+            await _tripService.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
     }

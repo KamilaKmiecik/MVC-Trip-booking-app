@@ -29,6 +29,13 @@
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="form-group">
+                @Html.LabelFor(model => model.Booking, new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.Booking, new SelectList(ViewBag.Bookings, "ID", "Name"))
+                    @Html.ValidationMessageFor(model => model.Booking)
+                </div>
+            </div>
+            <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
         </form>

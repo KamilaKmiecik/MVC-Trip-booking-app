@@ -3,26 +3,38 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using UBB_Trips.Data;
 using UBB_Trips.Models;
-using UBB_Trips.Repository;
+using UBB_Trips.Services;
 
 namespace UBB_Trips.Controllers
 {
     public class ClientsController : Controller
     {
-        private readonly IClientRepository _clientRepository;
+        private readonly IClientService _clientService;
+        private readonly IBookingService _bookingService; // Inject IBookingService
 
-        public ClientsController(IClientRepository clientRepository)
+        public ClientsController(IClientService clientService, IBookingService bookingService) // Modify the constructor to include IBookingService
         {
-            _clientRepository = clientRepository ?? throw new ArgumentNullException(nameof(clientRepository));
+            _clientService = clientService ?? throw new ArgumentNullException(nameof(clientService));
+            _bookingService = bookingService ?? throw new ArgumentNullException(nameof(bookingService)); // Assign bookingService to _bookingService
         }
 
         // GET: Clients
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
-            var clients = await _clientRepository.GetAllAsync();
-            return View(clients);
+            var clients = await _clientService.GetClientsPerPageAsync(page, pageSize);
+            var totalClients = await _clientService.GetTotalNumberOfClients(); // Pobranie całkowitej liczby klientów
+
+            // Spakuj wynik paginacji z powrotem do listy
+            var clientList = clients.ToList();
+
+            ViewBag.TotalClients = totalClients;
+            ViewBag.PageSize = pageSize;
+            ViewBag.CurrentPage = page;
+            return View(clientList); // Przekazujemy listę klientów do widoku
         }
+
 
         // GET: Clients/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -32,7 +44,7 @@ namespace UBB_Trips.Controllers
                 return NotFound();
             }
 
-            var client = await _clientRepository.GetByIdAsync(id.Value);
+            var client = await _clientService.GetByIdAsync(id.Value);
             if (client == null)
             {
                 return NotFound();
@@ -54,7 +66,7 @@ namespace UBB_Trips.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _clientRepository.AddAsync(client);
+                await _clientService.AddAsync(client);
                 return RedirectToAction(nameof(Index));
             }
             return View(client);
@@ -68,11 +80,13 @@ namespace UBB_Trips.Controllers
                 return NotFound();
             }
 
-            var client = await _clientRepository.GetByIdAsync(id.Value);
+            var client = await _clientService.GetByIdAsync(id.Value);
             if (client == null)
             {
                 return NotFound();
             }
+
+            ViewBag.Bookings = await _bookingService.GetAllAsync(); // Set the list of bookings in ViewBag
 
             return View(client);
         }
@@ -91,13 +105,14 @@ namespace UBB_Trips.Controllers
             {
                 try
                 {
-                    await _clientRepository.UpdateAsync(client);
+                    await _clientService.UpdateAsync(client);
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    
+                    // Handle exception
+                    return View(client);
                 }
-                return RedirectToAction(nameof(Index));
             }
             return View(client);
         }
@@ -110,7 +125,7 @@ namespace UBB_Trips.Controllers
                 return NotFound();
             }
 
-            var client = await _clientRepository.GetByIdAsync(id.Value);
+            var client = await _clientService.GetByIdAsync(id.Value);
             if (client == null)
             {
                 return NotFound();
@@ -124,7 +139,7 @@ namespace UBB_Trips.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _clientRepository.DeleteAsync(id);
+            await _clientService.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
     }

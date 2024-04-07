@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Data.Entity;
 using Microsoft.Extensions.Hosting;
 using UBB_Trips.Repository;
+using UBB_Trips.Services;
 
 namespace UBB_Trips;
 
@@ -22,9 +23,14 @@ public class Program
 
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
         builder.Services.AddControllersWithViews();
+
         builder.Services.AddScoped<ITripRepository, TripRepository>();
         builder.Services.AddScoped<IBookingRepository, BookingRepository>();
         builder.Services.AddScoped<IClientRepository, ClientRepository>();
+
+        builder.Services.AddScoped<ITripService, TripService>();
+        builder.Services.AddScoped<IClientService, ClientService>();
+        builder.Services.AddScoped<IBookingService, BookingService>();
 
         var app = builder.Build();
 
