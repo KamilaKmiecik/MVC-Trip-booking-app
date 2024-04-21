@@ -16,6 +16,6 @@ namespace UBB_Trips.ViewModels
         [EmailAddress(ErrorMessage = "Invalid email address")]
         public string Email { get; set; }
 
-        public int BookingID { get; set; } 
+        public int? BookingID { get; set; } 
     }
 }

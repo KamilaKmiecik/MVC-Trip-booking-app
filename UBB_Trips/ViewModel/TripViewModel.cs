@@ -34,35 +34,9 @@ namespace UBB_Trips.ViewModels
 
 
         [Display(Name = "Image")]
-        public string ImageURL { get; set; }
+        public string? ImageURL { get; set; }
 
-        public string Alt { get; set; }
-
-        public static IHtmlContent EnumDropDownListFor<TModel, TEnum>(IHtmlHelper<TModel> htmlHelper,
-            Expression<Func<TModel, TEnum>> expression, TEnum model, string optionLabel = null, object htmlAttributes = null)
-        {
-            var enumType = Nullable.GetUnderlyingType(typeof(TEnum)) ?? typeof(TEnum);
-            var values = Enum.GetValues(enumType);
-            var items = new List<SelectListItem>();
-
-            if (optionLabel != null)
-            {
-                items.Add(new SelectListItem { Text = optionLabel, Value = string.Empty });
-            }
-
-            foreach (var value in values)
-            {
-                items.Add(new SelectListItem
-                {
-                    Text = Enum.GetName(enumType, value),
-                    Value = value.ToString(),
-                    Selected = value.Equals(model)
-                });
-            }
-
-            return htmlHelper.DropDownListFor(expression, items, htmlAttributes);
-        }
-
+        public string? Alt { get; set; }
 
     }
 

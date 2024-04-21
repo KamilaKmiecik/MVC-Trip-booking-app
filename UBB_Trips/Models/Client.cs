@@ -13,7 +13,7 @@ public class Client
     [Display(Name = "Last name")]
     public string LastName { get; set; }
     public string Email { get; set; }
-    public Booking Booking { get; set; }
+    public Booking? Booking { get; set; }
 
     public Client()
     {

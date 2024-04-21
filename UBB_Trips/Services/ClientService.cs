@@ -75,7 +75,7 @@ namespace UBB_Trips.Services
                 FirstName = client.FirstName,
                 LastName = client.LastName,
                 Email = client.Email,
-                BookingID = client.Booking.ID
+               // BookingID = client.Booking.ID
             };
         }
 
