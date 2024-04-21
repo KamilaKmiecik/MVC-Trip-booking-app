@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using UBB_Trips.Models;
 using UBB_Trips.Services;
+using UBB_Trips.ViewModels;
 
 namespace UBB_Trips.Controllers
 {
@@ -55,14 +56,14 @@ namespace UBB_Trips.Controllers
         // POST: Trips/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,TripSTART,TripEND,Title,Description,Type,Food,Country,ImageURL,Alt")] Trip trip)
+        public async Task<IActionResult> Create([Bind("ID,TripSTART,TripEND,Title,Description,Type,Food,Country,ImageURL,Alt")] TripViewModel tripViewModel)
         {
             if (ModelState.IsValid)
             {
-                await _tripService.AddAsync(trip);
+                await _tripService.AddAsync(tripViewModel);
                 return RedirectToAction(nameof(Index));
             }
-            return View(trip);
+            return View(tripViewModel);
         }
 
         // GET: Trips/Edit/5
@@ -85,9 +86,9 @@ namespace UBB_Trips.Controllers
         // POST: Trips/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,TripSTART,TripEND,Title,Description,Type,Food,Country,ImageURL,Alt")] Trip trip)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,TripSTART,TripEND,Title,Description,Type,Food,Country,ImageURL,Alt")] TripViewModel tripViewModel)
         {
-            if (id != trip.ID)
+            if (id != tripViewModel.ID)
             {
                 return NotFound();
             }
@@ -96,16 +97,16 @@ namespace UBB_Trips.Controllers
             {
                 try
                 {
-                    await _tripService.UpdateAsync(trip);
+                    await _tripService.UpdateAsync(tripViewModel);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException e)
                 {
                     // Handle exception
-                    return View(trip);
+                    return View(tripViewModel);
                 }
             }
-            return View(trip);
+            return View(tripViewModel);
         }
 
         // GET: Trips/Delete/5

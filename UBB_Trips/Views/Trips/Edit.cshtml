@@ -1,5 +1,4 @@
-﻿@model UBB_Trips.Models.Trip
-@using UBB_Trips.Models
+﻿@model UBB_Trips.ViewModels.TripViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -36,32 +35,17 @@
             </div>
             <div class="form-group">
                 <label asp-for="Type" class="control-label"></label>
-                <select asp-for="Type" class="form-control">
-                    @foreach (var item in Enum.GetValues(typeof(TripTypeModel)))
-                    {
-                        <option value="@item">@((TripTypeModel)item)</option>
-                    }
-                </select>
+                <select asp-for="Type" asp-items="Html.GetEnumSelectList(typeof(TripTypeModel))" class="form-control"></select>
                 <span asp-validation-for="Type" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Food" class="control-label"></label>
-                <select asp-for="Food" class="form-control">
-                    @foreach (var item in Enum.GetValues(typeof(FoodAcoomodationModel)))
-                    {
-                        <option value="@item">@((FoodAcoomodationModel)item)</option>
-                    }
-                </select>
+                <select asp-for="Food" asp-items="Html.GetEnumSelectList(typeof(FoodAcoomodationModel))" class="form-control"></select>
                 <span asp-validation-for="Food" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Country" class="control-label"></label>
-                <select asp-for="Country" class="form-control">
-                    @foreach (var item in Enum.GetValues(typeof(CountryModel)))
-                    {
-                        <option value="@item">@((CountryModel)item)</option>
-                    }
-                </select>
+                <select asp-for="Country" asp-items="Html.GetEnumSelectList(typeof(CountryModel))" class="form-control"></select>
                 <span asp-validation-for="Country" class="text-danger"></span>
             </div>
             <div class="form-group">

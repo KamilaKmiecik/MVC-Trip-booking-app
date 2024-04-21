@@ -1,20 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using UBB_Trips.Models;
+using UBB_Trips.ViewModels;
 
-namespace UBB_Trips.Services;
-
-public interface IBookingService
+namespace UBB_Trips.Services
 {
-    Task<IEnumerable<Booking>> GetAllAsync();
-    Task<Booking?> GetByIdAsync(int id);
-    Task<IEnumerable<Booking>> FindAsync(Func<Booking, bool> predicate);
-    Task AddAsync(Booking entity);
-    Task UpdateAsync(Booking entity);
-    Task DeleteAsync(int id);
-    Task SaveAsync();
+    public interface IBookingService
+    {
+        Task<IEnumerable<BookingViewModel>> GetAllAsync();
+        Task<BookingViewModel?> GetByIdAsync(int id);
+        Task<IEnumerable<BookingViewModel>> FindAsync(Func<BookingViewModel, bool> predicate);
+        Task AddAsync(BookingViewModel entity);
+        Task UpdateAsync(BookingViewModel entity);
+        Task DeleteAsync(int id);
+        Task SaveAsync();
 
-    Task<int> GetTotalNumberOfBookingsAsync(); // Dodajemy nową metodę do pobierania całkowitej liczby rezerwacji
-    Task<IEnumerable<Booking>> GetBookingsPerPageAsync(int page, int pageSize); // Dodajemy nową metodę do pobierania rezerwacji na stronę
+        Task<int> GetTotalNumberOfBookingsAsync();
+        Task<IEnumerable<BookingViewModel>> GetBookingsPerPageAsync(int page, int pageSize);
+    }
 }

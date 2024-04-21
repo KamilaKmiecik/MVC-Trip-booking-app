@@ -4,6 +4,7 @@ using System;
 using System.Threading.Tasks;
 using UBB_Trips.Models;
 using UBB_Trips.Services;
+using UBB_Trips.ViewModels;
 
 namespace UBB_Trips.Controllers
 {
@@ -57,7 +58,7 @@ namespace UBB_Trips.Controllers
         // POST: Bookings/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Name,NumberOfBookings")] Booking booking)
+        public async Task<IActionResult> Create([Bind("ID,Name,NumberOfBookings")] BookingViewModel booking)
         {
             if (ModelState.IsValid)
             {
@@ -87,7 +88,7 @@ namespace UBB_Trips.Controllers
         // POST: Bookings/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,NumberOfBookings")] Booking booking)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,Name,NumberOfBookings")] BookingViewModel booking)
         {
             if (id != booking.ID)
             {

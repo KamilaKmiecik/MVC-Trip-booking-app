@@ -4,62 +4,93 @@ using System.Linq;
 using System.Threading.Tasks;
 using UBB_Trips.Models;
 using UBB_Trips.Repository;
+using UBB_Trips.ViewModels;
 
-namespace UBB_Trips.Services;
-
-public class BookingService : IBookingService
+namespace UBB_Trips.Services
 {
-    private readonly IBookingRepository _bookingRepository;
-
-    public BookingService(IBookingRepository bookingRepository)
+    public class BookingService : IBookingService
     {
-        _bookingRepository = bookingRepository;
-    }
+        private readonly IBookingRepository _bookingRepository;
 
-    public async Task<IEnumerable<Booking>> GetAllAsync()
-    {
-        return await _bookingRepository.GetAllAsync();
-    }
+        public BookingService(IBookingRepository bookingRepository)
+        {
+            _bookingRepository = bookingRepository;
+        }
 
-    public async Task<Booking?> GetByIdAsync(int id)
-    {
-        return await _bookingRepository.GetByIdAsync(id);
-    }
+        public async Task<int> GetTotalNumberOfBookingsAsync()
+        {
+            var bookings = await _bookingRepository.GetAllAsync();
+            return bookings.Count();
+        }
 
-    public async Task<IEnumerable<Booking>> FindAsync(Func<Booking, bool> predicate)
-    {
-        return await _bookingRepository.FindAsync(predicate);
-    }
+        public async Task<IEnumerable<BookingViewModel>> GetBookingsPerPageAsync(int page, int pageSize)
+        {
+            var allBookings = await _bookingRepository.GetAllAsync();
+            return allBookings.Skip((page - 1) * pageSize).Take(pageSize).Select(booking => new BookingViewModel
+            {
+                ID = booking.ID,
+                Name = booking.Name,
+                NumberOfBookings = booking.NumberOfBookings
+            });
+        }
 
-    public async Task AddAsync(Booking entity)
-    {
-        await _bookingRepository.AddAsync(entity);
-    }
+        public async Task<IEnumerable<BookingViewModel>> GetAllAsync()
+        {
+            var allBookings = await _bookingRepository.GetAllAsync();
+            return allBookings.Select(booking => new BookingViewModel
+            {
+                ID = booking.ID,
+                Name = booking.Name,
+                NumberOfBookings = booking.NumberOfBookings
+            });
+        }
 
-    public async Task UpdateAsync(Booking entity)
-    {
-        await _bookingRepository.UpdateAsync(entity);
-    }
+        public async Task<BookingViewModel?> GetByIdAsync(int id)
+        {
+            var booking = await _bookingRepository.GetByIdAsync(id);
+            return booking != null ? new BookingViewModel
+            {
+                ID = booking.ID,
+                Name = booking.Name,
+                NumberOfBookings = booking.NumberOfBookings
+            } : null;
+        }
 
-    public async Task DeleteAsync(int id)
-    {
-        await _bookingRepository.DeleteAsync(id);
-    }
+        public async Task<IEnumerable<BookingViewModel>> FindAsync(Func<BookingViewModel, bool> predicate)
+        {
+            var allBookings = await GetAllAsync();
+            return allBookings.Where(predicate);
+        }
 
-    public async Task SaveAsync()
-    {
-        await _bookingRepository.SaveAsync();
-    }
+        public async Task AddAsync(BookingViewModel entity)
+        {
+            var booking = new Booking
+            {
+                Name = entity.Name,
+                NumberOfBookings = entity.NumberOfBookings
+            };
+            await _bookingRepository.AddAsync(booking);
+        }
 
-    public async Task<int> GetTotalNumberOfBookingsAsync()
-    {
-        var bookings = await _bookingRepository.GetAllAsync();
-        return bookings.Count();
-    }
+        public async Task UpdateAsync(BookingViewModel entity)
+        {
+            var booking = new Booking
+            {
+                ID = entity.ID,
+                Name = entity.Name,
+                NumberOfBookings = entity.NumberOfBookings
+            };
+            await _bookingRepository.UpdateAsync(booking);
+        }
 
-    public async Task<IEnumerable<Booking>> GetBookingsPerPageAsync(int page, int pageSize)
-    {
-        var allBookings = await _bookingRepository.GetAllAsync();
-        return allBookings.Skip((page - 1) * pageSize).Take(pageSize);
+        public Task DeleteAsync(int id)
+        {
+            return _bookingRepository.DeleteAsync(id);
+        }
+
+        public Task SaveAsync()
+        {
+            return _bookingRepository.SaveAsync();
+        }
     }
 }

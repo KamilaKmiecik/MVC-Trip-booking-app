@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using UBB_Trips.Data;
 using UBB_Trips.Models;
 using UBB_Trips.Services;
+using UBB_Trips.ViewModels;
 
 namespace UBB_Trips.Controllers
 {
@@ -24,15 +25,14 @@ namespace UBB_Trips.Controllers
         public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
             var clients = await _clientService.GetClientsPerPageAsync(page, pageSize);
-            var totalClients = await _clientService.GetTotalNumberOfClients(); // Pobranie całkowitej liczby klientów
+            var totalClients = await _clientService.GetTotalNumberOfClients(); 
 
-            // Spakuj wynik paginacji z powrotem do listy
             var clientList = clients.ToList();
 
             ViewBag.TotalClients = totalClients;
             ViewBag.PageSize = pageSize;
             ViewBag.CurrentPage = page;
-            return View(clientList); // Przekazujemy listę klientów do widoku
+            return View(clientList); 
         }
 
 
@@ -62,7 +62,7 @@ namespace UBB_Trips.Controllers
         // POST: Clients/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,FirstName,LastName,Email")] Client client)
+        public async Task<IActionResult> Create([Bind("ID,FirstName,LastName,Email")] ClientViewModel client)
         {
             if (ModelState.IsValid)
             {
@@ -94,7 +94,7 @@ namespace UBB_Trips.Controllers
         // POST: Clients/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,FirstName,LastName,Email")] Client client)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,FirstName,LastName,Email")] ClientViewModel client)
         {
             if (id != client.ID)
             {

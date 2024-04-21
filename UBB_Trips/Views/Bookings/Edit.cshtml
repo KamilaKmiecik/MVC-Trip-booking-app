@@ -1,4 +1,4 @@
-﻿@model UBB_Trips.Models.Booking
+﻿@model UBB_Trips.ViewModels.BookingViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -35,5 +35,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

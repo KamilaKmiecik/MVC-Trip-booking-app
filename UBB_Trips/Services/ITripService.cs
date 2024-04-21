@@ -1,22 +1,22 @@
-﻿using UBB_Trips.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using UBB_Trips.Repository;
+using UBB_Trips.ViewModels;
 
-namespace UBB_Trips.Services;
-
-public interface ITripService
+namespace UBB_Trips.Services
 {
-    Task<IEnumerable<Trip>> GetAllAsync();
-    Task<Trip?> GetTripByIdAsync(int id);
+    public interface ITripService
+    {
+        Task<IEnumerable<TripViewModel>> GetAllAsync();
+        Task<TripViewModel?> GetTripByIdAsync(int id);
 
-    Task<IEnumerable<Trip>> GetTripsPerPageAsync(int page, int pageSize);
-    Task<IEnumerable<Trip>> FindAsync(Func<Trip, bool> predicate);
-    Task AddAsync(Trip entity);
-    Task UpdateAsync(Trip entity);
-    Task DeleteAsync(int id);
-    Task SaveAsync();
+        Task<IEnumerable<TripViewModel>> GetTripsPerPageAsync(int page, int pageSize);
+        Task<IEnumerable<TripViewModel>> FindAsync(Func<TripViewModel, bool> predicate);
+        Task AddAsync(TripViewModel entity);
+        Task UpdateAsync(TripViewModel entity);
+        Task DeleteAsync(int id);
+        Task SaveAsync();
 
-    Task<int> GetTotalNumberOfTripsAsync();
+        Task<int> GetTotalNumberOfTripsAsync();
+    }
 }
