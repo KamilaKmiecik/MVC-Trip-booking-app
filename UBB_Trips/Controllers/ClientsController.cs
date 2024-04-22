@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UBB_Trips.Data;
@@ -25,14 +26,14 @@ namespace UBB_Trips.Controllers
         public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
             var clients = await _clientService.GetClientsPerPageAsync(page, pageSize);
-            var totalClients = await _clientService.GetTotalNumberOfClients(); 
+            var totalClients = await _clientService.GetTotalNumberOfClients();
 
             var clientList = clients.ToList();
 
             ViewBag.TotalClients = totalClients;
             ViewBag.PageSize = pageSize;
             ViewBag.CurrentPage = page;
-            return View(clientList); 
+            return View(clientList.Adapt<IEnumerable<ClientViewModel>>());
         }
 
 
@@ -50,7 +51,7 @@ namespace UBB_Trips.Controllers
                 return NotFound();
             }
 
-            return View(client);
+            return View(client.Adapt<ClientViewModel>());
         }
 
         // GET: Clients/Create
@@ -66,7 +67,7 @@ namespace UBB_Trips.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _clientService.AddAsync(client);
+                await _clientService.AddAsync(client.Adapt<Client>());
                 return RedirectToAction(nameof(Index));
             }
             return View(client);
@@ -86,9 +87,9 @@ namespace UBB_Trips.Controllers
                 return NotFound();
             }
 
-            ViewBag.Bookings = await _bookingService.GetAllAsync(); // Set the list of bookings in ViewBag
+            ViewBag.Bookings = (await _bookingService.GetAllAsync()).Adapt<IEnumerable<BookingViewModel>>(); // Set the list of bookings in ViewBag
 
-            return View(client);
+            return View(client.Adapt<ClientViewModel>());
         }
 
         // POST: Clients/Edit/5
@@ -105,7 +106,7 @@ namespace UBB_Trips.Controllers
             {
                 try
                 {
-                    await _clientService.UpdateAsync(client);
+                    await _clientService.UpdateAsync(client.Adapt<Client>());
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
@@ -131,7 +132,7 @@ namespace UBB_Trips.Controllers
                 return NotFound();
             }
 
-            return View(client);
+            return View(client.Adapt<ClientViewModel>());
         }
 
         // POST: Clients/Delete/5

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using UBB_Trips.Models;
 using UBB_Trips.Repository;
 using UBB_Trips.ViewModels;
-using Mapster; 
+using Mapster;
 
 namespace UBB_Trips.Services;
 
@@ -24,39 +24,39 @@ public class BookingService : IBookingService
         return bookings.Count();
     }
 
-    public async Task<IEnumerable<BookingViewModel>> GetBookingsPerPageAsync(int page, int pageSize)
+    public async Task<IEnumerable<Booking>> GetBookingsPerPageAsync(int page, int pageSize)
     {
         var allBookings = await _bookingRepository.GetAllAsync();
-        return allBookings.Skip((page - 1) * pageSize).Take(pageSize).Adapt<List<BookingViewModel>>();
+        return allBookings.Skip((page - 1) * pageSize).Take(pageSize).Adapt<List<Booking>>();
     }
 
-    public async Task<IEnumerable<BookingViewModel>> GetAllAsync()
+    public async Task<IEnumerable<Booking>> GetAllAsync()
     {
         var allBookings = await _bookingRepository.GetAllAsync();
-        return allBookings.Adapt<List<BookingViewModel>>();
+        return allBookings.Adapt<List<Booking>>();
     }
 
-    public async Task<BookingViewModel?> GetByIdAsync(int id)
+    public async Task<Booking?> GetByIdAsync(int id)
     {
         var booking = await _bookingRepository.GetByIdAsync(id);
-        return booking?.Adapt<BookingViewModel>(); 
+        return booking?.Adapt<Booking>(); 
     }
 
-    public async Task<IEnumerable<BookingViewModel>> FindAsync(Func<BookingViewModel, bool> predicate)
+    public async Task<IEnumerable<Booking>> FindAsync(Func<Booking, bool> predicate)
     {
         var allBookings = await GetAllAsync();
         return allBookings.Where(predicate);
     }
 
-    public async Task AddAsync(BookingViewModel entity)
+    public async Task AddAsync(Booking entity)
     {
-        var booking = entity.Adapt<Booking>(); 
+        var booking = entity.Adapt<Models.Booking>(); 
         await _bookingRepository.AddAsync(booking);
     }
 
-    public async Task UpdateAsync(BookingViewModel entity)
+    public async Task UpdateAsync(Booking entity)
     {
-        var booking = entity.Adapt<Booking>(); 
+        var booking = entity.Adapt<Models.Booking>(); 
         await _bookingRepository.UpdateAsync(booking);
     }
 

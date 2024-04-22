@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using UBB_Trips.ViewModels;
+using UBB_Trips.Models;
 
 namespace UBB_Trips.Services
 {
     public interface IClientService
     {
-        Task<IEnumerable<ClientViewModel>> GetAllAsync();
-        Task<IEnumerable<ClientViewModel>> GetClientsPerPageAsync(int page, int pageSize);
-        Task<ClientViewModel?> GetByIdAsync(int id);
-        Task<IEnumerable<ClientViewModel>> FindAsync(Func<ClientViewModel, bool> predicate);
-        Task AddAsync(ClientViewModel entity);
-        Task UpdateAsync(ClientViewModel entity);
+        Task<IEnumerable<Client>> GetAllAsync();
+        Task<IEnumerable<Client>> GetClientsPerPageAsync(int page, int pageSize);
+        Task<Client?> GetByIdAsync(int id);
+        Task<IEnumerable<Client>> FindAsync(Func<Client, bool> predicate);
+        Task AddAsync(Client entity);
+        Task UpdateAsync(Client entity);
         Task DeleteAsync(int id);
         Task SaveAsync();
 

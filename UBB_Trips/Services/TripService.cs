@@ -18,36 +18,36 @@ public class TripService : ITripService
         _repository = repository;
     }
 
-    public async Task<IEnumerable<TripViewModel>> GetAllAsync()
+    public async Task<IEnumerable<Trip>> GetAllAsync()
     {
         var trips = await _repository.GetAllAsync();
-        return trips.Adapt<IEnumerable<TripViewModel>>();
+        return trips.Adapt<IEnumerable<Trip>>();
     }
 
-    public async Task<TripViewModel?> GetTripByIdAsync(int id)
+    public async Task<Trip?> GetTripByIdAsync(int id)
     {
         var trip = await _repository.GetByIdAsync(id);
-        return trip != null ? trip.Adapt<TripViewModel>() : null;
+        return trip != null ? trip : null;
     }
 
-    public async Task<IEnumerable<TripViewModel>> GetTripsPerPageAsync(int page, int pageSize)
+    public async Task<IEnumerable<Trip>> GetTripsPerPageAsync(int page, int pageSize)
     {
         var allTrips = await _repository.GetAllAsync();
-        return allTrips.Skip((page - 1) * pageSize).Take(pageSize).Select(trip => trip.Adapt<TripViewModel>());
+        return allTrips.Skip((page - 1) * pageSize).Take(pageSize).Select(trip => trip);
     }
 
-    public async Task<IEnumerable<TripViewModel>> FindAsync(Func<TripViewModel, bool> predicate)
+    public async Task<IEnumerable<Trip>> FindAsync(Func<Trip, bool> predicate)
     {
         var allTrips = await GetAllAsync();
         return allTrips.Where(predicate);
     }
 
-    public async Task AddAsync(TripViewModel entity)
+    public async Task AddAsync(Trip entity)
     {
-        await _repository.AddAsync(entity.Adapt<Trip>());
+        await _repository.AddAsync(entity);
     }
 
-    public async Task UpdateAsync(TripViewModel entity)
+    public async Task UpdateAsync(Trip entity)
     {
         await _repository.UpdateAsync(entity.Adapt<Trip>());
     }

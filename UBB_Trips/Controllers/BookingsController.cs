@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using UBB_Trips.Models;
 using UBB_Trips.Services;
 using UBB_Trips.ViewModels;
+using Mapster;
 
 namespace UBB_Trips.Controllers
 {
@@ -26,7 +27,7 @@ namespace UBB_Trips.Controllers
             ViewBag.TotalBookings = totalBookings;
             ViewBag.PageSize = pageSize;
             ViewBag.CurrentPage = page;
-            return View(bookings);
+            return View(bookings.Adapt<IEnumerable<BookingViewModel>>());
         }
 
         // GET: Bookings/Details/5
@@ -43,7 +44,7 @@ namespace UBB_Trips.Controllers
                 return NotFound();
             }
 
-            return View(booking);
+            return View(booking.Adapt<BookingViewModel>());
         }
 
         // GET: Bookings/Create
@@ -51,7 +52,7 @@ namespace UBB_Trips.Controllers
         {
             var clients = await _bookingService.GetAllAsync();
             ViewBag.ClientIds = new SelectList(clients, "Id", "Name");
-           // ViewBag.Trips = await _bookingService.GetTripsAsync();
+            // ViewBag.Trips = await _bookingService.GetTripsAsync();
             return View();
         }
 
@@ -62,7 +63,7 @@ namespace UBB_Trips.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _bookingService.AddAsync(booking);
+                await _bookingService.AddAsync(booking.Adapt<Booking>());
                 return RedirectToAction(nameof(Index));
             }
             return View(booking);
@@ -82,7 +83,7 @@ namespace UBB_Trips.Controllers
                 return NotFound();
             }
 
-            return View(booking);
+            return View(booking.Adapt<BookingViewModel>());
         }
 
         // POST: Bookings/Edit/5
@@ -97,7 +98,7 @@ namespace UBB_Trips.Controllers
 
             if (ModelState.IsValid)
             {
-                await _bookingService.UpdateAsync(booking);
+                await _bookingService.UpdateAsync(booking.Adapt<Booking>());
                 return RedirectToAction(nameof(Index));
             }
             return View(booking);
@@ -117,7 +118,7 @@ namespace UBB_Trips.Controllers
                 return NotFound();
             }
 
-            return View(booking);
+            return View(booking.Adapt<BookingViewModel>());
         }
 
         // POST: Bookings/Delete/5

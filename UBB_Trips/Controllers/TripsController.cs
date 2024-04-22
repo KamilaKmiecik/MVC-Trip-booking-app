@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Mapster;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Data.Entity.Infrastructure;
 using System.Linq;
@@ -27,7 +28,7 @@ namespace UBB_Trips.Controllers
             ViewBag.TotalTrips = totalTrips;
             ViewBag.PageSize = pageSize;
             ViewBag.CurrentPage = page;
-            return View(trips.ToList());
+            return View(trips.ToList().Adapt<IEnumerable<TripViewModel>>());
         }
 
         // GET: Trips/Details/5
@@ -44,7 +45,7 @@ namespace UBB_Trips.Controllers
                 return NotFound();
             }
 
-            return View(trip);
+            return View(trip.Adapt<TripViewModel>());
         }
 
         // GET: Trips/Create
@@ -60,7 +61,7 @@ namespace UBB_Trips.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _tripService.AddAsync(tripViewModel);
+                await _tripService.AddAsync(tripViewModel.Adapt<Trip>());
                 return RedirectToAction(nameof(Index));
             }
             return View(tripViewModel);
@@ -80,7 +81,7 @@ namespace UBB_Trips.Controllers
                 return NotFound();
             }
 
-            return View(trip);
+            return View(trip.Adapt<TripViewModel>());
         }
 
         // POST: Trips/Edit/5
@@ -97,7 +98,7 @@ namespace UBB_Trips.Controllers
             {
                 try
                 {
-                    await _tripService.UpdateAsync(tripViewModel);
+                    await _tripService.UpdateAsync(tripViewModel.Adapt<Trip>());
                     return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException e)
@@ -123,7 +124,7 @@ namespace UBB_Trips.Controllers
                 return NotFound();
             }
 
-            return View(trip);
+            return View(trip.Adapt<TripViewModel>());
         }
 
         // POST: Trips/Delete/5

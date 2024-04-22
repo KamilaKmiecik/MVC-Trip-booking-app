@@ -4,67 +4,64 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using UBB_Trips.ViewModels;
-using Mapster; // Import the Mapster namespace
 
-namespace UBB_Trips.Services;
-
-public class ClientService : IClientService
+namespace UBB_Trips.Services
 {
-    private readonly IClientRepository _repository;
-
-    public ClientService(IClientRepository repository)
+    public class ClientService : IClientService
     {
-        _repository = repository;
-    }
+        private readonly IClientRepository _repository;
 
-    public async Task<IEnumerable<ClientViewModel>> GetAllAsync()
-    {
-        var clients = await _repository.GetAllAsync();
-        return clients.Select(client => client.Adapt<ClientViewModel>());
-    }
+        public ClientService(IClientRepository repository)
+        {
+            _repository = repository;
+        }
 
-    public async Task<IEnumerable<ClientViewModel>> GetClientsPerPageAsync(int page, int pageSize)
-    {
-        var allClients = await _repository.GetAllAsync();
-        return allClients.Skip((page - 1) * pageSize).Take(pageSize).Select(client => client.Adapt<ClientViewModel>());
-    }
+        public async Task<IEnumerable<Client>> GetAllAsync()
+        {
+            return await _repository.GetAllAsync();
+        }
 
-    public async Task<ClientViewModel?> GetByIdAsync(int id)
-    {
-        var client = await _repository.GetByIdAsync(id);
-        return client != null ? client.Adapt<ClientViewModel>() : null;
-    }
+        public async Task<IEnumerable<Client>> GetClientsPerPageAsync(int page, int pageSize)
+        {
+            var allClients = await _repository.GetAllAsync();
+            return allClients.Skip((page - 1) * pageSize).Take(pageSize);
+        }
 
-    public async Task<IEnumerable<ClientViewModel>> FindAsync(Func<ClientViewModel, bool> predicate)
-    {
-        var clients = await _repository.GetAllAsync();
-        return clients.Select(client => client.Adapt<ClientViewModel>()).Where(predicate);
-    }
+        public async Task<Client?> GetByIdAsync(int id)
+        {
+            return await _repository.GetByIdAsync(id);
+        }
 
-    public async Task AddAsync(ClientViewModel entity)
-    {
-        await _repository.AddAsync(entity.Adapt<Client>());
-    }
+        public async Task<IEnumerable<Client>> FindAsync(Func<Client, bool> predicate)
+        {
+            var clients = await _repository.GetAllAsync();
+            return clients.Where(predicate);
+        }
 
-    public async Task UpdateAsync(ClientViewModel entity)
-    {
-        await _repository.UpdateAsync(entity.Adapt<Client>());
-    }
+        public async Task AddAsync(Client entity)
+        {
+            await _repository.AddAsync(entity);
+        }
 
-    public async Task DeleteAsync(int id)
-    {
-        await _repository.DeleteAsync(id);
-    }
+        public async Task UpdateAsync(Client entity)
+        {
+            await _repository.UpdateAsync(entity);
+        }
 
-    public async Task SaveAsync()
-    {
-        await _repository.SaveAsync();
-    }
+        public async Task DeleteAsync(int id)
+        {
+            await _repository.DeleteAsync(id);
+        }
 
-    public async Task<int> GetTotalNumberOfClients()
-    {
-        var clients = await _repository.GetAllAsync();
-        return clients.Count();
+        public async Task SaveAsync()
+        {
+            await _repository.SaveAsync();
+        }
+
+        public async Task<int> GetTotalNumberOfClients()
+        {
+            var clients = await _repository.GetAllAsync();
+            return clients.Count();
+        }
     }
 }

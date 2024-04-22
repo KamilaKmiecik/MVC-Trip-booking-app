@@ -24,12 +24,15 @@ namespace UBB_Trips
             builder.Services.AddDbContext<TripContext>(options =>
                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-           // builder.Services.AddControllersWithViews();
-            builder.Services.AddControllersWithViews().AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining<ClientViewModelValidator>()
-                                                                                    .RegisterValidatorsFromAssemblyContaining<BookingViewModelValidator>()
-                                                                                    .RegisterValidatorsFromAssemblyContaining<TripViewModelValidator>());
+            builder.Services.AddControllersWithViews().AddFluentValidation(fv => fv
+                            .RegisterValidatorsFromAssemblyContaining<ClientViewModelValidator>()
+                            .RegisterValidatorsFromAssemblyContaining<BookingViewModelValidator>()
+                            .RegisterValidatorsFromAssemblyContaining<TripViewModelValidator>());
 
+
+            //builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+           // builder.Services.AddControllersWithViews();
+        
             builder.Services.AddScoped<ITripRepository, TripRepository>();
             builder.Services.AddScoped<IBookingRepository, BookingRepository>();
             builder.Services.AddScoped<IClientRepository, ClientRepository>();
