@@ -1,9 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using UBB_Trips.Models;
 
 namespace UBB_Trips.Data;
 
-public class TripContext : DbContext
+public class TripContext : IdentityDbContext<IdentityUser>
 {
     public TripContext(DbContextOptions<TripContext> options) : base(options)
     {
@@ -18,5 +20,7 @@ public class TripContext : DbContext
         modelBuilder.Entity<Trip>().ToTable("Trip");
         modelBuilder.Entity<Client>().ToTable("Client");
         modelBuilder.Entity<Booking>().ToTable("Booking");
+
+        base.OnModelCreating(modelBuilder); 
     }
 }

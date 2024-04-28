@@ -11,6 +11,7 @@ using UBB_Trips.Services;
 using Mapster;
 using FluentValidation.AspNetCore;
 using UBB_Trips.Validators; // Import Mapster namespace
+using Microsoft.AspNetCore.Identity;
 
 namespace UBB_Trips
 {
@@ -23,6 +24,9 @@ namespace UBB_Trips
             // Add services to the container.
             builder.Services.AddDbContext<TripContext>(options =>
                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+            builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<TripContext>();
+            builder.Services.AddRazorPages();
 
             builder.Services.AddControllersWithViews().AddFluentValidation(fv => fv
                             .RegisterValidatorsFromAssemblyContaining<ClientViewModelValidator>()
@@ -79,6 +83,7 @@ namespace UBB_Trips
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
+            app.MapRazorPages();
             app.Run();
         }
     }

@@ -1,4 +1,5 @@
 ﻿using Mapster;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Data.Entity.Infrastructure;
@@ -10,6 +11,7 @@ using UBB_Trips.ViewModels;
 
 namespace UBB_Trips.Controllers
 {
+    [Authorize]
     public class TripsController : Controller
     {
         private readonly ITripService _tripService;
@@ -20,6 +22,7 @@ namespace UBB_Trips.Controllers
         }
 
         // GET: Trips
+        [AllowAnonymous]
         public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
             var trips = await _tripService.GetTripsPerPageAsync(page, pageSize);

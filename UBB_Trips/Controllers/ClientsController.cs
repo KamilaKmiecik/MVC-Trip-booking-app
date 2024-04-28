@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Mapster;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UBB_Trips.Data;
@@ -11,6 +12,7 @@ using UBB_Trips.ViewModels;
 
 namespace UBB_Trips.Controllers
 {
+    [Authorize]
     public class ClientsController : Controller
     {
         private readonly IClientService _clientService;
@@ -23,6 +25,7 @@ namespace UBB_Trips.Controllers
         }
 
         // GET: Clients
+        [AllowAnonymous]
         public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
             var clients = await _clientService.GetClientsPerPageAsync(page, pageSize);

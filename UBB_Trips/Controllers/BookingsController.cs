@@ -6,9 +6,11 @@ using UBB_Trips.Models;
 using UBB_Trips.Services;
 using UBB_Trips.ViewModels;
 using Mapster;
+using Microsoft.AspNetCore.Authorization;
 
 namespace UBB_Trips.Controllers
 {
+    [Authorize]
     public class BookingsController : Controller
     {
         private readonly IBookingService _bookingService;
@@ -19,6 +21,7 @@ namespace UBB_Trips.Controllers
         }
 
         // GET: Bookings
+        [AllowAnonymous]
         public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
             var bookings = await _bookingService.GetBookingsPerPageAsync(page, pageSize);
