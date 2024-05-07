@@ -16,12 +16,12 @@ namespace UBB_Trips.Controllers
     public class ClientsController : Controller
     {
         private readonly IClientService _clientService;
-        private readonly IBookingService _bookingService; // Inject IBookingService
+        private readonly IBookingService _bookingService; 
 
-        public ClientsController(IClientService clientService, IBookingService bookingService) // Modify the constructor to include IBookingService
+        public ClientsController(IClientService clientService, IBookingService bookingService) 
         {
             _clientService = clientService ?? throw new ArgumentNullException(nameof(clientService));
-            _bookingService = bookingService ?? throw new ArgumentNullException(nameof(bookingService)); // Assign bookingService to _bookingService
+            _bookingService = bookingService ?? throw new ArgumentNullException(nameof(bookingService));
         }
 
         // GET: Clients
