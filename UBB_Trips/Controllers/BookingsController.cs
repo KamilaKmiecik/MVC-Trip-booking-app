@@ -51,6 +51,7 @@ namespace UBB_Trips.Controllers
         }
 
         // GET: Bookings/Create
+        [Authorize(Roles="Admin")]
         public async Task<IActionResult> Create()
         {
             var clients = await _bookingService.GetAllAsync();
@@ -62,6 +63,7 @@ namespace UBB_Trips.Controllers
         // POST: Bookings/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("ID,Name,NumberOfBookings")] BookingViewModel booking)
         {
             if (ModelState.IsValid)
@@ -73,6 +75,7 @@ namespace UBB_Trips.Controllers
         }
 
         // GET: Bookings/Edit/5
+        [Authorize(Roles = "Admin, Booking Agent")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -92,6 +95,7 @@ namespace UBB_Trips.Controllers
         // POST: Bookings/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Booking Agent")]
         public async Task<IActionResult> Edit(int id, [Bind("ID,Name,NumberOfBookings")] BookingViewModel booking)
         {
             if (id != booking.ID)
@@ -108,6 +112,7 @@ namespace UBB_Trips.Controllers
         }
 
         // GET: Bookings/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -127,6 +132,7 @@ namespace UBB_Trips.Controllers
         // POST: Bookings/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _bookingService.DeleteAsync(id);

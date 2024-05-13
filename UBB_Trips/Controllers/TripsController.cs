@@ -35,6 +35,7 @@ namespace UBB_Trips.Controllers
         }
 
         // GET: Trips/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -52,6 +53,7 @@ namespace UBB_Trips.Controllers
         }
 
         // GET: Trips/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -60,6 +62,7 @@ namespace UBB_Trips.Controllers
         // POST: Trips/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create([Bind("ID,TripSTART,TripEND,Title,Description,Type,Food,Country,ImageURL,Alt")] TripViewModel tripViewModel)
         {
             if (ModelState.IsValid)
@@ -71,6 +74,7 @@ namespace UBB_Trips.Controllers
         }
 
         // GET: Trips/Edit/5
+        [Authorize(Roles = "Admin, Booking Agent")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -90,6 +94,7 @@ namespace UBB_Trips.Controllers
         // POST: Trips/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Booking Agent")]
         public async Task<IActionResult> Edit(int id, [Bind("ID,TripSTART,TripEND,Title,Description,Type,Food,Country,ImageURL,Alt")] TripViewModel tripViewModel)
         {
             if (id != tripViewModel.ID)
@@ -114,6 +119,7 @@ namespace UBB_Trips.Controllers
         }
 
         // GET: Trips/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -133,6 +139,7 @@ namespace UBB_Trips.Controllers
         // POST: Trips/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _tripService.DeleteAsync(id);

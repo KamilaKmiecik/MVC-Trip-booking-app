@@ -1,4 +1,16 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
+@inject SignInManager<IdentityUser> SignInManager
+
+@{
+    var user = await UserManager.GetUserAsync(User);
+    var isAuthenticated = SignInManager.IsSignedIn(User);
+    var isAdmin = User.IsInRole("Admin"); 
+    var isAgent = User.IsInRole("Booking Agent");
+    var isClient = User.IsInRole("Client");
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -32,7 +44,10 @@
                             </a>
                             <div class="dropdown-menu" aria-labelledby="tripsDropdown">
                                 <a class="dropdown-item" asp-area="" asp-controller="Trips" asp-action="Index">Trip list</a>
-                                <a class="dropdown-item" asp-area="" asp-controller="Trips" asp-action="Create">Create</a>
+                                @if (isAuthenticated)
+                                {
+                                    <a class="dropdown-item" asp-area="" asp-controller="Trips" asp-action="Create">Create</a>
+                                }
                             </div>
                         </li>
                         <li class="nav-item dropdown">
@@ -40,7 +55,10 @@
                                 Booking
                             </a>
                             <div class="dropdown-menu" aria-labelledby="bookingDropdown">
-                                <a class="dropdown-item" asp-area="" asp-controller="Bookings" asp-action="Create">Book</a>
+                                @if (isAdmin)
+                                {
+                                    <a class="dropdown-item" asp-area="" asp-controller="Bookings" asp-action="Create">Book</a>
+                                }
                                 <a class="dropdown-item" asp-area="" asp-controller="Bookings" asp-action="Index">Booked list</a>
                             </div>
                         </li>
@@ -49,7 +67,10 @@
                                 Client
                             </a>
                             <div class="dropdown-menu" aria-labelledby="clientsDropdown">
-                                <a class="dropdown-item" asp-area="" asp-controller="Clients" asp-action="Index">Client list</a>
+                                @if (isAdmin || isAgent) 
+                                {
+                                    <a class="dropdown-item" asp-area="" asp-controller="Clients" asp-action="Index">Client list</a>
+                                }
                                 <a class="dropdown-item" asp-area="" asp-controller="Clients" asp-action="Create">Create account</a>
                             </div>
                         </li>

@@ -10,7 +10,7 @@ using UBB_Trips.Repository;
 using UBB_Trips.Services;
 using Mapster;
 using FluentValidation.AspNetCore;
-using UBB_Trips.Validators; // Import Mapster namespace
+using UBB_Trips.Validators; 
 using Microsoft.AspNetCore.Identity;
 using System.Security.Cryptography;
 
@@ -92,11 +92,45 @@ namespace UBB_Trips
             {
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-                var roles = new[] { "Admin", "Booking Agent", "Customer"};
+                 var roles = new[] { "Admin", "Booking Agent", "Client"};
 
-                foreach (var role in roles)
-                    if (!await roleManager.RoleExistsAsync(role))
-                        await roleManager.CreateAsync(new IdentityRole(role)); 
+                 foreach (var role in roles)
+                     if (!await roleManager.RoleExistsAsync(role))
+                         await roleManager.CreateAsync(new IdentityRole(role)); 
+
+                var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
+                string email = "admin@mail.com";
+                string password = "Test@1234";
+
+                if(await userManager.FindByEmailAsync(email) == null)
+                {
+                    var user = new IdentityUser() { UserName = email, Email = email, EmailConfirmed = true };
+
+                    await userManager.CreateAsync(user, password);
+                    await userManager.AddToRoleAsync(user, "Admin"); 
+                }
+
+                email = "client@mail.com";
+                password = "Test@1234";
+
+                if (await userManager.FindByEmailAsync(email) == null)
+                {
+                    var user = new IdentityUser() { UserName = email, Email = email, EmailConfirmed = true };
+
+                    await userManager.CreateAsync(user, password);
+                    await userManager.AddToRoleAsync(user, "Client");
+                }
+
+                email = "booking@mail.com";
+                password = "Test@1234";
+
+                if (await userManager.FindByEmailAsync(email) == null)
+                {
+                    var user = new IdentityUser() { UserName = email, Email = email, EmailConfirmed = true };
+
+                    await userManager.CreateAsync(user, password);
+                    await userManager.AddToRoleAsync(user, "Booking Agent");
+                }
 
             }
             app.Run();

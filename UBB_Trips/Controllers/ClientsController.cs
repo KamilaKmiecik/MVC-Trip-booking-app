@@ -25,7 +25,7 @@ namespace UBB_Trips.Controllers
         }
 
         // GET: Clients
-        [AllowAnonymous]
+        [Authorize(Roles ="Admin, Booking Agent")]
         public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
             var clients = await _clientService.GetClientsPerPageAsync(page, pageSize);
@@ -41,6 +41,7 @@ namespace UBB_Trips.Controllers
 
 
         // GET: Clients/Details/5
+        [Authorize(Roles = "Admin, Booking Agent")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -58,6 +59,7 @@ namespace UBB_Trips.Controllers
         }
 
         // GET: Clients/Create
+        [AllowAnonymous]
         public IActionResult Create()
         {
             return View();
@@ -66,6 +68,7 @@ namespace UBB_Trips.Controllers
         // POST: Clients/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AllowAnonymous]
         public async Task<IActionResult> Create([Bind("ID,FirstName,LastName,Email")] ClientViewModel client)
         {
             if (ModelState.IsValid)
@@ -77,6 +80,7 @@ namespace UBB_Trips.Controllers
         }
 
         // GET: Clients/Edit/5
+        [Authorize(Roles = "Admin, Booking Agent")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -97,6 +101,7 @@ namespace UBB_Trips.Controllers
 
         // POST: Clients/Edit/5
         [HttpPost]
+        [Authorize(Roles = "Admin, Booking Agent")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,FirstName,LastName,Email")] ClientViewModel client)
         {
@@ -122,6 +127,7 @@ namespace UBB_Trips.Controllers
         }
 
         // GET: Clients/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -141,6 +147,7 @@ namespace UBB_Trips.Controllers
         // POST: Clients/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             await _clientService.DeleteAsync(id);
