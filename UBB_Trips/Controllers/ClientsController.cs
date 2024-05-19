@@ -26,9 +26,9 @@ namespace UBB_Trips.Controllers
 
         // GET: Clients
         [Authorize(Roles ="Admin, Booking Agent")]
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10, string searchQuery = "")
         {
-            var clients = await _clientService.GetClientsPerPageAsync(page, pageSize);
+            var clients = await _clientService.GetClientsPerPageAsync(page, pageSize, searchQuery);
             var totalClients = await _clientService.GetTotalNumberOfClients();
 
             var clientList = clients.ToList();

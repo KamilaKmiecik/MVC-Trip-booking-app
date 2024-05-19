@@ -24,9 +24,15 @@ public class BookingService : IBookingService
         return bookings.Count();
     }
 
-    public async Task<IEnumerable<Booking>> GetBookingsPerPageAsync(int page, int pageSize)
+    public async Task<IEnumerable<Booking>> GetBookingsPerPageAsync(int page, int pageSize, string searchQuery)
     {
         var allBookings = await _bookingRepository.GetAllAsync();
+
+        if (!string.IsNullOrEmpty(searchQuery))
+        {
+            allBookings = allBookings.Where(c => c.Name.ToUpper().Contains(searchQuery.ToUpper()));
+        }
+
         return allBookings.Skip((page - 1) * pageSize).Take(pageSize).Adapt<List<Booking>>();
     }
 

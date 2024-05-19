@@ -22,9 +22,9 @@ namespace UBB_Trips.Controllers
 
         // GET: Bookings
         [AllowAnonymous]
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10, string seachQuery = "")
         {
-            var bookings = await _bookingService.GetBookingsPerPageAsync(page, pageSize);
+            var bookings = await _bookingService.GetBookingsPerPageAsync(page, pageSize, seachQuery);
             var totalBookings = await _bookingService.GetTotalNumberOfBookingsAsync();
 
             ViewBag.TotalBookings = totalBookings;

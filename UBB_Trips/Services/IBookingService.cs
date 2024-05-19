@@ -16,6 +16,6 @@ namespace UBB_Trips.Services
         Task SaveAsync();
 
         Task<int> GetTotalNumberOfBookingsAsync();
-        Task<IEnumerable<Booking>> GetBookingsPerPageAsync(int page, int pageSize);
+        Task<IEnumerable<Booking>> GetBookingsPerPageAsync(int page, int pageSize, string searchQuery);
     }
 }

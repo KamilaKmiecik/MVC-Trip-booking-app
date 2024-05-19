@@ -23,9 +23,9 @@ namespace UBB_Trips.Controllers
 
         // GET: Trips
         [AllowAnonymous]
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(int page = 1, int pageSize = 10, string searchQuery = "")
         {
-            var trips = await _tripService.GetTripsPerPageAsync(page, pageSize);
+            var trips = await _tripService.GetTripsPerPageAsync(page, pageSize, searchQuery);
             var totalTrips = await _tripService.GetTotalNumberOfTripsAsync();
 
             ViewBag.TotalTrips = totalTrips;

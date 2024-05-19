@@ -21,9 +21,15 @@ namespace UBB_Trips.Services
             return await _repository.GetAllAsync();
         }
 
-        public async Task<IEnumerable<Client>> GetClientsPerPageAsync(int page, int pageSize)
+        public async Task<IEnumerable<Client>> GetClientsPerPageAsync(int page, int pageSize, string searchQuery)
         {
             var allClients = await _repository.GetAllAsync();
+
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                allClients = allClients.Where(c => c.FirstName.ToUpper().Contains(searchQuery.ToUpper()) || c.LastName.ToUpper().Contains(searchQuery.ToUpper()));
+            }
+
             return allClients.Skip((page - 1) * pageSize).Take(pageSize);
         }
 

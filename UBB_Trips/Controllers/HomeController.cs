@@ -25,6 +25,13 @@ namespace UBB_Trips.Controllers
             return View();
         }
 
+        public IActionResult DashBoard(int id)
+        {
+            return View();
+        }
+
+
+
         public IActionResult Privacy()
         {
             return View();

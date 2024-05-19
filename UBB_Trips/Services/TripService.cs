@@ -30,9 +30,14 @@ public class TripService : ITripService
         return trip != null ? trip : null;
     }
 
-    public async Task<IEnumerable<Trip>> GetTripsPerPageAsync(int page, int pageSize)
+    public async Task<IEnumerable<Trip>> GetTripsPerPageAsync(int page, int pageSize, string searchQuery)
     {
         var allTrips = await _repository.GetAllAsync();
+
+        if (!string.IsNullOrEmpty(searchQuery))
+        {
+            allTrips = allTrips.Where(c => c.Title.ToUpper().Contains(searchQuery.ToUpper()) || c.Description.ToUpper().Contains(searchQuery.ToUpper()));
+        }
         return allTrips.Skip((page - 1) * pageSize).Take(pageSize).Select(trip => trip);
     }
 
