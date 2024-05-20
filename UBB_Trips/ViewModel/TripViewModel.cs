@@ -18,7 +18,7 @@ namespace UBB_Trips.ViewModels
         [Display(Name = "End Date")]
         public DateTime TripEND { get; set; }
 
-        public double Days { get; set; }
+        public double Days => (TripEND - TripSTART).TotalDays;
 
         public string Title { get; set; }
         public string Description { get; set; }

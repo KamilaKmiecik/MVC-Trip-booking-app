@@ -31,12 +31,15 @@
                 <div class="sidebar-brand-text mx-3">UBB Trips</div>
             </a>
             <hr class="sidebar-divider my-0">
-            <li class="nav-item active">
-                <a class="nav-link" asp-area="" asp-controller="Home" asp-action="DashBoard">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Dashboard</span>
-                </a>
-            </li>
+            @if (isAdmin)
+                    {
+                        <li class="nav-item active">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="DashBoard">
+                                <i class="fas fa-fw fa-tachometer-alt"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                    }
             <li class="nav-item active">
             <partial name="_LoginPartial" />
             </li>

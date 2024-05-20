@@ -1,61 +1,100 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var trips = ViewBag.Trips as IEnumerable<UBB_Trips.ViewModels.TripViewModel>;
+    var bookings = ViewBag.Bookings as IEnumerable<UBB_Trips.ViewModels.BookingViewModel>;
+    var clients = ViewBag.Clients as IEnumerable<UBB_Trips.ViewModels.ClientViewModel>;
+}
+
+<h1> </h1>
+<!DOCTYPE html>
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Dashboard</title>
-    <!-- Bootstrap core CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Custom styles for SB Admin 2 -->
     <link href="https://startbootstrap.github.io/startbootstrap-sb-admin-2/css/sb-admin-2.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-light">
     <div class="container-fluid">
-        <!-- Page Heading -->
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
             <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
         </div>
-        <!-- Content Row -->
         <div class="row">
-            <!-- Content Column -->
             <div class="col-lg-6 mb-4">
-                <!-- Project Card Example -->
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Projects</h6>
+                        <h6 class="m-0 font-weight-bold text-primary">Trips</h6>
                     </div>
                     <div class="card-body">
-                        <h4 class="small font-weight-bold">Server Migration <span class="float-right">20%</span></h4>
-                        <div class="progress mb-4">
-                            <div class="progress-bar bg-danger" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <h4 class="small font-weight-bold">Sales Tracking <span class="float-right">40%</span></h4>
-                        <div class="progress mb-4">
-                            <div class="progress-bar bg-warning" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <h4 class="small font-weight-bold">Customer Database <span class="float-right">60%</span></h4>
-                        <div class="progress mb-4">
-                            <div class="progress-bar" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <h4 class="small font-weight-bold">Payout Details <span class="float-right">80%</span></h4>
-                        <div class="progress mb-4">
-                            <div class="progress-bar bg-info" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        <h4 class="small font-weight-bold">Account Setup <span class="float-right">Complete!</span></h4>
-                        <div class="progress">
-                            <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
+                        @foreach (var trip in trips)
+                        {
+                            <h4 class="small font-weight-bold">@trip.Title <span class="float-right">@trip.Days days</span></h4>
+                            <div class="progress mb-4">
+                                <div class="progress-bar" role="progressbar" style="width: @(trip.Days * 10)%" aria-valuenow="@(trip.Days * 10)" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Bookings</h6>
+                    </div>
+                    <div class="card-body">
+                        @foreach (var booking in bookings)
+                        {
+                            <h4 class="small font-weight-bold">@booking.Name <span class="float-right">@booking.NumberOfBookings people</span></h4>
+                            <div class="progress mb-4">
+                                <div class="progress-bar" role="progressbar" style="width: @(booking.NumberOfBookings * 10)%" aria-valuenow="@(booking.NumberOfBookings * 10)" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            @if (clients != null)
+                            {
+                                foreach (var client in clients.Where(c => c.BookingID == booking.ID))
+                                {
+                                    <p>@client.FirstName @client.LastName (@client.Email)</p>
+                                }
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Bookings Chart</h6>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="bookingsChart"></canvas>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Bootstrap core JavaScript-->
     <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
-    <!-- Core plugin JavaScript-->
     <script src="https://startbootstrap.github.io/startbootstrap-sb-admin-2/vendor/jquery-easing/jquery.easing.min.js"></script>
-    <!-- Custom scripts for all pages-->
     <script src="https://startbootstrap.github.io/startbootstrap-sb-admin-2/js/sb-admin-2.min.js"></script>
+    <script>
+        var ctx = document.getElementById('bookingsChart').getContext('2d');
+        var bookingsChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(Json.Serialize(((IEnumerable<UBB_Trips.ViewModels.TripViewModel>)ViewBag.Trips).Select(t => t.Title))), 
+                datasets: [{
+                    label: '# of Bookings',
+                    data: @Html.Raw(Json.Serialize(((IEnumerable<UBB_Trips.ViewModels.BookingViewModel>)ViewBag.Bookings).Select(b => b.NumberOfBookings))), 
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>
