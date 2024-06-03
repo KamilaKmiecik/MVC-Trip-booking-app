@@ -1,11 +1,13 @@
 ﻿@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc.Localization
+
 @inject UserManager<IdentityUser> UserManager
 @inject SignInManager<IdentityUser> SignInManager
-
+@inject IViewLocalizer ViewLocalizer
 @{
     var user = await UserManager.GetUserAsync(User);
     var isAuthenticated = SignInManager.IsSignedIn(User);
-    var isAdmin = User.IsInRole("Admin"); 
+    var isAdmin = User.IsInRole("Admin");
     var isAgent = User.IsInRole("Booking Agent");
     var isClient = User.IsInRole("Client");
 }
@@ -15,7 +17,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - UBB_Trips</title>
+    <title>@ViewLocalizer["UBB_Trips"]</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -25,102 +27,101 @@
     <div id="wrapper">
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
-                <div >
-                    <i><img src="~/img/logo.png" alt="Logo" width="50" height="50" /></i>
+                <div>
+                    <i><img src="~/img/logo.png" alt="@ViewLocalizer["Logo"]" width="50" height="50" /></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">UBB Trips</div>
+                <div class="sidebar-brand-text mx-3">@ViewLocalizer["UBB Trips"]</div>
             </a>
             <hr class="sidebar-divider my-0">
             @if (isAdmin)
-                    {
-                        <li class="nav-item active">
-                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="DashBoard">
-                                <i class="fas fa-fw fa-tachometer-alt"></i>
-                                <span>Dashboard</span>
-                            </a>
-                        </li>
-                    }
+            {
+                <li class="nav-item active">
+                    <a class="nav-link" asp-area="" asp-controller="Home" asp-action="DashBoard">
+                        <i class="fas fa-fw fa-tachometer-alt"></i>
+                        <span>@ViewLocalizer["Dashboard"]</span>
+                    </a>
+                </li>
+            }
             <li class="nav-item active">
-            <partial name="_LoginPartial" />
+                <partial name="_LoginPartial" />
             </li>
             <li class="nav-item">
                 <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">
                     <i class="fas fa-fw fa-home"></i>
-                    <span>Home</span>
+                    <span>@ViewLocalizer["Home"]</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">
                     <i class="fas fa-fw fa-shield-alt"></i>
-                    <span>Privacy</span>
+                    <span>@ViewLocalizer["Privacy"]</span>
                 </a>
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="tripsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fas fa-fw fa-plane"></i>
-                    <span>Trips</span>
+                    <span>@ViewLocalizer["Trips"]</span>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="tripsDropdown">
-                    <a class="dropdown-item" asp-area="" asp-controller="Trips" asp-action="Index">Trip list</a>
+                    <a class="dropdown-item" asp-area="" asp-controller="Trips" asp-action="Index">@ViewLocalizer["Trip list"]</a>
                     @if (isAuthenticated)
                     {
-                        <a class="dropdown-item" asp-area="" asp-controller="Trips" asp-action="Create">Create</a>
+                        <a class="dropdown-item" asp-area="" asp-controller="Trips" asp-action="Create">@ViewLocalizer["Create"]</a>
                     }
                 </div>
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="bookingDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fas fa-fw fa-book"></i>
-                    <span>Booking</span>
+                    <span>@ViewLocalizer["Booking"]</span>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="bookingDropdown">
                     @if (isAdmin)
                     {
-                        <a class="dropdown-item" asp-area="" asp-controller="Bookings" asp-action="Create">Book</a>
+                        <a class="dropdown-item" asp-area="" asp-controller="Bookings" asp-action="Create">@ViewLocalizer["Book"]</a>
                     }
-                    <a class="dropdown-item" asp-area="" asp-controller="Bookings" asp-action="Index">Booked list</a>
+                    <a class="dropdown-item" asp-area="" asp-controller="Bookings" asp-action="Index">@ViewLocalizer["Booked list"]</a>
                 </div>
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="clientsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fas fa-fw fa-user"></i>
-                    <span>Client</span>
+                    <span>@ViewLocalizer["Client"]</span>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="clientsDropdown">
                     @if (isAdmin || isAgent)
                     {
-                        <a class="dropdown-item" asp-area="" asp-controller="Clients" asp-action="Index">Client list</a>
+                        <a class="dropdown-item" asp-area="" asp-controller="Clients" asp-action="Index">@ViewLocalizer["Client list"]</a>
                     }
-                    <a class="dropdown-item" asp-area="" asp-controller="Clients" asp-action="Create">Create account</a>
+                    <a class="dropdown-item" asp-area="" asp-controller="Clients" asp-action="Create">@ViewLocalizer["Create account"]</a>
                 </div>
             </li>
         </ul>
-       
+
         <div class="container">
             <main role="main" class="pb-3">
                 @RenderBody()
             </main>
         </div>
 
-        </div>
-        <footer class="sticky-footer bg-white">
-            <div class="container my-auto">
-                <div class="copyright text-center my-auto">
-                    <span>&copy; ul. Willowa 2, 43-309 Bielsko-Biała, tel. +48 33 8279203</span>
-                    <br>
-                    <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
-                </div>
+    </div>
+    <footer class="sticky-footer bg-white">
+        <div class="container my-auto">
+            <div class="copyright text-center my-auto">
+                <span>&copy; ul. Willowa 2, 43-309 Bielsko-Biała, tel. +48 33 8279203</span>
+                <br>
+                <a asp-area="" asp-controller="Home" asp-action="Privacy">@ViewLocalizer["Privacy Policy"]</a>
             </div>
-        </footer>
+        </div>
+    </footer>
 
-        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
-        <script src="https://startbootstrap.com/theme/sb-admin-2/assets/js/scripts.js"></script>
-        <script src="~/lib/jquery/dist/jquery.min.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
-        <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-        @await RenderSectionAsync("Scripts", required: false)
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://startbootstrap.com/theme/sb-admin-2/assets/js/scripts.js"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
-

@@ -1,10 +1,12 @@
-﻿@{
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer ViewLocalizer
+
+@{
     var trips = ViewBag.Trips as IEnumerable<UBB_Trips.ViewModels.TripViewModel>;
     var bookings = ViewBag.Bookings as IEnumerable<UBB_Trips.ViewModels.BookingViewModel>;
     var clients = ViewBag.Clients as IEnumerable<UBB_Trips.ViewModels.ClientViewModel>;
 }
 
-<h1> </h1>
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -16,18 +18,18 @@
 <body class="bg-gradient-primary">
     <div class="container-fluid">
         <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h1 class="h3 mb-0 text-white">Dashboard</h1>
+            <h1 class="h3 mb-0 text-white">@ViewLocalizer["Dashboard"]</h1>
         </div>
         <div class="row">
             <div class="col-lg-6 mb-4">
                 <div class="card shadow mb-4">
                     <div class="card-header py-3 bg-primary">
-                        <h6 class="m-0 font-weight-bold text-white">Trips</h6>
+                        <h6 class="m-0 font-weight-bold text-white">@ViewLocalizer["Trips"]</h6>
                     </div>
                     <div class="card-body">
                         @foreach (var trip in trips)
                         {
-                            <h4 class="small font-weight-bold">@trip.Title <span class="float-right">@trip.Days days</span></h4>
+                            <h4 class="small font-weight-bold">@trip.Title <span class="float-right">@trip.Days @ViewLocalizer["days"]</span></h4>
                             <div class="progress mb-4">
                                 <div class="progress-bar bg-success" role="progressbar" style="width: @(trip.Days * 10)%" aria-valuenow="@(trip.Days * 10)" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
@@ -38,12 +40,12 @@
             <div class="col-lg-6 mb-4">
                 <div class="card shadow mb-4">
                     <div class="card-header py-3 bg-primary">
-                        <h6 class="m-0 font-weight-bold text-white">Bookings</h6>
+                        <h6 class="m-0 font-weight-bold text-white">@ViewLocalizer["Bookings"]</h6>
                     </div>
                     <div class="card-body">
                         @foreach (var booking in bookings)
                         {
-                            <h4 class="small font-weight-bold">@booking.Name <span class="float-right">@booking.NumberOfBookings people</span></h4>
+                            <h4 class="small font-weight-bold">@booking.Name <span class="float-right">@booking.NumberOfBookings @ViewLocalizer["people"]</span></h4>
                             <div class="progress mb-4">
                                 <div class="progress-bar bg-success" role="progressbar" style="width: @(booking.NumberOfBookings * 10)%" aria-valuenow="@(booking.NumberOfBookings * 10)" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
@@ -59,7 +61,7 @@
                 </div>
                 <div class="card shadow mb-4">
                     <div class="card-header py-3 bg-primary">
-                        <h6 class="m-0 font-weight-bold text-white">Bookings Chart</h6>
+                        <h6 class="m-0 font-weight-bold text-white">@ViewLocalizer["Bookings Chart"]</h6>
                     </div>
                     <div class="card-body">
                         <canvas id="bookingsChart"></canvas>
@@ -78,10 +80,10 @@
             data: {
                 labels: @Html.Raw(Json.Serialize(((IEnumerable<UBB_Trips.ViewModels.TripViewModel>)ViewBag.Trips).Select(t => t.Title))),
                 datasets: [{
-                    label: '# of Bookings',
+                    label: '@ViewLocalizer["# of Bookings"]',
                     data: @Html.Raw(Json.Serialize(((IEnumerable<UBB_Trips.ViewModels.BookingViewModel>)ViewBag.Bookings).Select(b => b.NumberOfBookings))),
                     backgroundColor: 'rgba(0, 123, 255, 0.5)',
-                    borderColor: 'rgba(0, 123, 255, 1)', 
+                    borderColor: 'rgba(0, 123, 255, 1)',
                     borderWidth: 1
                 }]
             },

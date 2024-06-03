@@ -13,6 +13,9 @@ using FluentValidation.AspNetCore;
 using UBB_Trips.Validators; 
 using Microsoft.AspNetCore.Identity;
 using System.Security.Cryptography;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
 
 namespace UBB_Trips
 {
@@ -48,7 +51,13 @@ namespace UBB_Trips
             builder.Services.AddScoped<IClientService, ClientService>();
             builder.Services.AddScoped<IBookingService, BookingService>();
 
-            TypeAdapterConfig.GlobalSettings.Default.PreserveReference(true); 
+            TypeAdapterConfig.GlobalSettings.Default.PreserveReference(true);
+
+            builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+            builder.Services.AddControllersWithViews()
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+                .AddDataAnnotationsLocalization();
 
 
             var app = builder.Build();
@@ -81,6 +90,20 @@ namespace UBB_Trips
             app.UseRouting();
 
             app.UseAuthorization();
+
+            var supportedCultures = new[]
+            {
+                new CultureInfo("en-EN"),
+                new CultureInfo("pl-PL"),
+                new CultureInfo("de-DE")
+            };
+
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("en-EN"),
+                SupportedCultures = supportedCultures,
+                SupportedUICultures = supportedCultures
+            });
 
             app.MapControllerRoute(
                 name: "default",
