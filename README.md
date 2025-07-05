@@ -8,6 +8,7 @@ Application and website allowing users search for and book trips, save and manag
 + XUnit
 + Bootstrap
 + HTML5, CSS3, JavaScript
++ ASP.NET Core  Globalization and localization
 
 
 **Front page of the website**
